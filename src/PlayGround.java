@@ -1,4 +1,5 @@
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -16,13 +17,14 @@ public class PlayGround {
 	public PlayGround(){
 		 ground=new AtomicInteger[HEIGHT][WIDTH];
 		 food= new Point(HEIGHT/2,WIDTH/2,100);
-		 occupiedList=new ArrayList<Point>();
+		 occupiedList=Collections.synchronizedList( new ArrayList<Point>());
 		 occupiedList.add(food);
 		 for(int i=0;i<HEIGHT;i++){
 			 for(int j=0;j<WIDTH;j++){
 				 ground[i][j]=new AtomicInteger(0);
 			 }
 		 }
+		 ground[food.x][food.y].set(100);
 	}
 	public int getFoodX(){
 		return food.getX();
@@ -32,18 +34,24 @@ public class PlayGround {
 	}
 	public int getPoint(Point p, int update){
 		if(p.getX()==food.getX()&&p.getY()==food.getY()){
+			System.out.println("Get Food:"+" x:"+food.getX()+" y:"+food.getY());
 			//need synchronize
-			ground[p.getX()][p.getY()].compareAndSet(100, update);	
+			if(ground[p.getX()][p.getY()].compareAndSet(100, update)){
+				System.out.println("Get Food Success:"+" x:"+food.getX()+" y:"+food.getY());
 			occupiedList.remove(0);
 			occupiedList.add(p);
 			randomFood();
 			return 100;
+			}
 		}
 		else{
-			ground[p.getX()][p.getY()].compareAndSet(0, update);
+			if(ground[p.getX()][p.getY()].compareAndSet(0, update)){
 			occupiedList.add(p);
 			return update;
+			}
 		}
+		System.out.println("Get Point Fail:"+" x:"+p.getX()+" y:"+p.getY());
+		return 101;
 		
 	}
 	
@@ -71,22 +79,30 @@ public class PlayGround {
 	public static void main(String args[]){
 		
 		PlayGround playGround= new PlayGround();
-		Snake snake1= new Snake(playGround,0,0,2,1);
-//		Snake snake2= new Snake();
+		Snake snake1= new Snake(playGround,10,10,2,1);
+		Snake snake2= new Snake(playGround,90,90,1,2);
 		Thread t1= new Thread(snake1);
-//		Thread t2= new Thread(snake2);
+		Thread t2= new Thread(snake2);
 		
 		CreateUI ui=new CreateUI(playGround);// how to initialize UI?
 		
 		t1.start();
+		t2.start();
 //		ui.repaint();
 		
 		try {
-			int i=0;
-			while(i<1000){
+//			int i=0;
+//			while(i<1000){
+//			Thread.sleep(10);
+//			ui.repaint();
+//			i++;
+//			}
+			
+//			int i=0;
+			while(playGround.occupiedList.size()-1<100*100/2+1){
 			Thread.sleep(10);
 			ui.repaint();
-			i++;
+//			i++;
 			}
 			
 		} catch (InterruptedException e) {
@@ -95,11 +111,10 @@ public class PlayGround {
 		}
 		
 		t1.interrupt();
-		
-//		t2.start();
+		t2.interrupt();
 		try {
 			t1.join();
-//			t2.join();
+			t2.join();
 		} catch (InterruptedException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

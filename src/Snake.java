@@ -68,21 +68,34 @@ public class Snake implements Runnable {
 			}
 			
 //			System.out.println("x:"+body.get(0).getX()+"y:"+body.get(0).getY());
-			AiAlgorithm algorithm = new AiAlgorithm();// decide which direction to go
-														
+			AiAlgorithm algorithm = new AiAlgorithm();// decide which direction to go											
 			algorithm.calculateDir();
+			int countFalse=0;
+			while(true){
 			Point p = newHead();
 			int state = playGround.getPoint(p, myId);//what if false
 			
 			if (state == 100) {// if state==100, move head successfully and hit food!
 								
 				body.add(0, p); // add head but do not need to delete tail
+				break;
 			} else if (state == myId) {// if state== myId, move head successfully;
 										
 				int last = body.size() - 1;// delete tail
 				playGround.releasePoint(body.get(last), myId);
 				body.remove(last);
 				body.add(0, p);// add new head
+				break;
+			}
+			else if (state == 101) {
+				direction=direction%4+1;
+				countFalse++;
+			}
+			
+			if(countFalse==4){
+				break;
+			}
+			
 			}
 			
 			try {
@@ -100,16 +113,22 @@ public class Snake implements Runnable {
 		int y=body.get(0).getY();
 		switch (direction) {
 		case UP:
+		    if(x>0)
 			x=x-1;
+		    else
+		    x=99;
 			break;
 		case DOWN:
-			x=x+1;
+			x=x%99+1;
 			break;
 		case LEFT:
+			if(y>0)
 			y=y-1;
+			else
+				y=99;
 			break;
 		case RIGHT:
-			y=y+1;
+			y=y%99+1;
 			break;
 		}	
 		System.out.println(x+y);
