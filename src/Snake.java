@@ -1,3 +1,4 @@
+import java.awt.Color;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -7,7 +8,7 @@ public class Snake implements Runnable {
 	public static final int DOWN=2;
 	public static final int LEFT=3;
 	public static final int RIGHT=4;
-	public static final int SLEEPTIME=200;
+	public static final int SLEEPTIME=20;
 	
 	private PlayGround playGround;
 	public List<Point> body;//snake body array list, do we really need this
@@ -19,7 +20,8 @@ public class Snake implements Runnable {
 		this.direction=direction;	
 		this.playGround=playGround;
 		body = new ArrayList<Point>();
-		body.add(new Point(x, y));
+		body.add(new Point(x+1, y, myId));
+		body.add(new Point(x, y, myId));
 	}
 	
 	private class AiAlgorithm {
@@ -58,12 +60,19 @@ public class Snake implements Runnable {
 	@Override
 	public void run() {
 		while (!Thread.interrupted()) {
-			System.out.println(body.get(0).getX()+body.get(0).getY());
+			for (int i = 0; i < body.size(); i++) {
+				Point p=body.get(i);
+				System.out.println("body num:"+i+" x:"+p.getX()+" y:"+p.getY());
+//				g2d.setColor(Color.ORANGE);
+//				g2d.drawRect(p.getX()*5, p.getY()*5, 5, 5);
+			}
+			
+//			System.out.println("x:"+body.get(0).getX()+"y:"+body.get(0).getY());
 			AiAlgorithm algorithm = new AiAlgorithm();// decide which direction to go
 														
 			algorithm.calculateDir();
 			Point p = newHead();
-			int state = playGround.getPoint(p, myId);
+			int state = playGround.getPoint(p, myId);//what if false
 			
 			if (state == 100) {// if state==100, move head successfully and hit food!
 								
@@ -78,6 +87,7 @@ public class Snake implements Runnable {
 			
 			try {
 				Thread.sleep(SLEEPTIME);
+//				ui.repaint();
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 				break;
@@ -103,7 +113,7 @@ public class Snake implements Runnable {
 			break;
 		}	
 		System.out.println(x+y);
-		return new Point(x,y);
+		return new Point(x,y,myId);
 	
 	}
 
