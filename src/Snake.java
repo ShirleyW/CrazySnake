@@ -5,18 +5,22 @@ import java.util.List;
 
 public class Snake implements Runnable {
 	public static final int UP=1;
-	public static final int DOWN=2;
-	public static final int LEFT=3;
-	public static final int RIGHT=4;
+	public static final int RIGHT=2;
+	public static final int DOWN=3;
+	public static final int LEFT=4;
+
 	public static final int SLEEPTIME=20;
 	
 	private PlayGround playGround;
 	public List<Point> body;//snake body array list, do we really need this
 	int direction;
 	int myId;
+//	Color myColor;
 	
 	public Snake(PlayGround playGround, int x, int y, int direction, int myId){
+//	public Snake(PlayGround playGround, int x, int y, int direction, int myId, Color myColor){
 		this.myId=myId;
+		//this.myColor=myColor;
 		this.direction=direction;	
 		this.playGround=playGround;
 		body = new ArrayList<Point>();

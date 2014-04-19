@@ -3,6 +3,7 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
+import java.util.Random;
 
 import javax.swing.JFrame;
 
@@ -13,9 +14,21 @@ public class CreateUI extends JFrame{
 	Rectangle rect = new Rectangle(20, 40, 5 * 50, 5 * 35);
 	Snake snake;
 	PlayGround playGround;
-	 public CreateUI(PlayGround pg){
+	Color colors[];
+	
+	 public CreateUI(PlayGround pg, int colorNums){
 //		 this.snake=snake;
 		 playGround=pg;
+		 colors=new Color[colorNums];
+		 Random rand = new Random();
+		 for(int i=0;i<colorNums;i++){
+			 int r=rand.nextInt(255);
+			 int g=rand.nextInt(255);
+			 int b=rand.nextInt(255);
+			 colors[i]=new Color(r,g,b);
+		 }
+		 
+		 
 //		JFrame gui= new JFrame();
 		this.setTitle("Crazy Snake");
 		this.setBounds(100, 100, WIDTH+15, HEIGHT+40);
@@ -47,7 +60,7 @@ public class CreateUI extends JFrame{
 			for (int i = 0; i < playGround.occupiedList.size(); i++) {
 				Point p=playGround.occupiedList.get(i);
 				System.out.println("drawSnake: x:"+p.getX()*5+"y:"+p.getY()*5);
-				g2d.setColor(Color.ORANGE);
+				g2d.setColor(colors[p.getId()%100]);
 				g2d.drawRect(p.getX()*5, p.getY()*5, 5, 5);
 			}
 			

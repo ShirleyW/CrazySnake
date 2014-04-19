@@ -15,13 +15,13 @@ public class PlayGround {
 	public List<Point> occupiedList;
 	
 	public PlayGround(){
-		 ground=new AtomicInteger[HEIGHT][WIDTH];
-		 food= new Point(HEIGHT/2,WIDTH/2,100);
+		 ground=new AtomicInteger[WIDTH][HEIGHT];
+		 food= new Point(WIDTH/2,HEIGHT/2,100);
 		 occupiedList=Collections.synchronizedList( new ArrayList<Point>());
 		 occupiedList.add(food);
 		 for(int i=0;i<HEIGHT;i++){
 			 for(int j=0;j<WIDTH;j++){
-				 ground[i][j]=new AtomicInteger(0);
+				 ground[j][i]=new AtomicInteger(0);
 			 }
 		 }
 		 ground[food.x][food.y].set(100);
@@ -78,13 +78,15 @@ public class PlayGround {
 	
 	public static void main(String args[]){
 		
+		int snakeNum=2;
+		
 		PlayGround playGround= new PlayGround();
 		Snake snake1= new Snake(playGround,10,10,2,1);
 		Snake snake2= new Snake(playGround,90,90,1,2);
 		Thread t1= new Thread(snake1);
 		Thread t2= new Thread(snake2);
 		
-		CreateUI ui=new CreateUI(playGround);// how to initialize UI?
+		CreateUI ui=new CreateUI(playGround,snakeNum+1);// how to initialize UI?
 		
 		t1.start();
 		t2.start();
@@ -100,7 +102,7 @@ public class PlayGround {
 			
 //			int i=0;
 			while(playGround.occupiedList.size()-1<100*100/2+1){
-			Thread.sleep(10);
+			Thread.sleep(1);
 			ui.repaint();
 //			i++;
 			}
@@ -109,6 +111,12 @@ public class PlayGround {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		
+//		while(playGround.occupiedList.size()-1<100*100/2+1){
+////			Thread.sleep(1);
+//			ui.repaint();
+////			i++;
+//			}
 		
 		t1.interrupt();
 		t2.interrupt();
