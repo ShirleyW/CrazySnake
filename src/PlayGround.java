@@ -64,8 +64,8 @@ public class PlayGround {
 		Random randomX = new Random();
 		Random randomY = new Random();
 		while (true) {
-	        int x=randomX.nextInt(HEIGHT); 
-	        int y= randomY.nextInt(WIDTH);
+	        int x=randomX.nextInt(WIDTH); 
+	        int y= randomY.nextInt(HEIGHT);
 	        
 	        if(ground[x][y].compareAndSet(0, 100)){
 	        	Point newFood= new Point(x,y,100);
@@ -78,18 +78,36 @@ public class PlayGround {
 	
 	public static void main(String args[]){
 		
-		int snakeNum=2;
+		int snakeNum=50;
+		Snake snakes[];
+		snakes=new Snake[snakeNum];
 		
+		Thread t[];
+		t=new Thread[snakeNum];
 		PlayGround playGround= new PlayGround();
-		Snake snake1= new Snake(playGround,10,10,2,1);
-		Snake snake2= new Snake(playGround,90,90,1,2);
-		Thread t1= new Thread(snake1);
-		Thread t2= new Thread(snake2);
+		
+		Random rand = new Random();
+		for(int i=0;i<snakeNum;i++){
+			int x=rand.nextInt(WIDTH);
+			int y=rand.nextInt(HEIGHT);
+			int d=rand.nextInt(4)+1;
+			snakes[i]=new Snake(playGround,x,y,d,i+1);
+			t[i]= new Thread(snakes[i]);
+		}
+		
+//		Snake snake1= new Snake(playGround,10,10,2,1);
+//		Snake snake2= new Snake(playGround,90,90,1,2);
+//		Thread t1= new Thread(snake1);
+//		Thread t2= new Thread(snake2);
 		
 		CreateUI ui=new CreateUI(playGround,snakeNum+1);// how to initialize UI?
 		
-		t1.start();
-		t2.start();
+		for(int i=0;i<snakeNum;i++){
+			t[i].start();
+		}
+		
+//		t1.start();
+//		t2.start();
 //		ui.repaint();
 		
 		try {
@@ -118,15 +136,30 @@ public class PlayGround {
 ////			i++;
 //			}
 		
-		t1.interrupt();
-		t2.interrupt();
-		try {
-			t1.join();
-			t2.join();
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}	
+//		t1.interrupt();
+//		t2.interrupt();
+//		try {
+//			t1.join();
+//			t2.join();
+//		} catch (InterruptedException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}	
+		
+		for(int i=0;i<snakeNum;i++){
+			t[i].interrupt();
+		}
+		
+
+		for(int i=0;i<snakeNum;i++){
+			try {
+				t[i].join();
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		
 	}
 
 }

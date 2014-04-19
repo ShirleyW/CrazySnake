@@ -24,8 +24,9 @@ public class Snake implements Runnable {
 		this.direction=direction;	
 		this.playGround=playGround;
 		body = new ArrayList<Point>();
-		body.add(new Point(x+1, y, myId));
+//		body.add(new Point(x+1, y, myId));
 		body.add(new Point(x, y, myId));
+		body.add(newHead());
 	}
 	
 	private class AiAlgorithm {
