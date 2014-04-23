@@ -26,6 +26,33 @@ public class PlayGround {
 		 }
 		 ground[food.x][food.y].set(100);
 	}
+//	private class Food{
+//		private Point food;
+//		public synchronized boolean getFood(Point p){
+//			if(p.getX()==food.getX()&&p.getY()==food.getY()){
+//				
+//				return true;
+//			}
+//			return false;
+//		}
+//		private void randomFood(){
+//			Random randomX = new Random();
+//			Random randomY = new Random();
+//			while (true) {
+//		       //random problem
+//				int x=randomX.nextInt(WIDTH); 
+//		        int y= randomY.nextInt(HEIGHT);
+//		        
+//		        if(ground[x][y].compareAndSet(0, 100)){
+//		        	Point newFood= new Point(x,y,100);
+//		        	food=newFood;
+//		        	occupiedList.add(0,food);
+//		        	break;
+//		        }
+//			}
+//		}
+//		
+//	}
 	public int getFoodX(){
 		return food.getX();
 	}
@@ -64,7 +91,8 @@ public class PlayGround {
 		Random randomX = new Random();
 		Random randomY = new Random();
 		while (true) {
-	        int x=randomX.nextInt(WIDTH); 
+	       //random problem
+			int x=randomX.nextInt(WIDTH); 
 	        int y= randomY.nextInt(HEIGHT);
 	        
 	        if(ground[x][y].compareAndSet(0, 100)){
